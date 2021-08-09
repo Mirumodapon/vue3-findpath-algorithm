@@ -5,7 +5,7 @@ export default {
 			const rowArray = [];
 			for (let j = 0; j < column; ++j) {
 				rowArray.push({
-					uid: i * row + j,
+					uid: i * column + j,
 					d0: -1,
 					d1: -1,
 					action: false,
@@ -25,24 +25,24 @@ export default {
 		commit('setMode', mode);
 	},
 	setStart: ({ commit, state }, uid) => {
-		const { row, column, start } = state;
-		const n_row = Math.floor(uid / row);
+		const { column, start } = state;
+		const n_row = Math.floor(uid / column);
 		const n_column = uid % column;
-		const o_row = Math.floor(start / row);
+		const o_row = Math.floor(start / column);
 		const o_column = start % column;
 		commit('setStart', { n_column, n_row, o_column, o_row });
 	},
 	setEnd: ({ commit, state }, uid) => {
-		const { row, column, end } = state;
-		const n_row = Math.floor(uid / row);
+		const { column, end } = state;
+		const n_row = Math.floor(uid / column);
 		const n_column = uid % column;
-		const o_row = Math.floor(end / row);
+		const o_row = Math.floor(end / column);
 		const o_column = end % column;
 		commit('setEnd', { n_column, n_row, o_column, o_row });
 	},
 	switchWall: ({ state, commit }, uid) => {
 		let { row, column, content } = state;
-		row = Math.floor(uid / row);
+		row = Math.floor(uid / column);
 		column = uid % column;
 		const status = !content[row][column].wall;
 		commit('switchWall', { row, column, status });

@@ -11,7 +11,8 @@ export default createStore({
 		end: -1,
 		startColor: 'lightblue',
 		endColor: 'red',
-		normal: 'white'
+		normal: 'white',
+		wallColor: 'black'
 	},
 	mutations: {
 		init: (state, { row, column }) => {
@@ -51,6 +52,16 @@ export default createStore({
 				dispatch('table/setBlock', { uid: end, color: normal });
 			commit('setEnd', uid);
 			dispatch('table/setBlock', { uid, color: endColor });
+		},
+		setWall: ({ dispatch, rootGetters, state }, uid) => {
+			const { wallColor, normal } = state;
+			const isWall = rootGetters['table/isWall'](uid);
+			console.log(isWall);
+			dispatch('table/setBlock', {
+				uid,
+				wall: !isWall,
+				color: isWall ? normal : wallColor
+			});
 		},
 		setMode: ({ commit }, mode) => {
 			commit('setMode', mode);

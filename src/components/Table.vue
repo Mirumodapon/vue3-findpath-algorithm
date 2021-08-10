@@ -34,17 +34,18 @@ export default {
 		...mapGetters({ table: 'table/table', mode: 'mode', w: 'table/isWall' })
 	},
 	methods: {
-		...mapActions(['setMode', 'setStart', 'setEnd']),
+		...mapActions(['setMode', 'setStart', 'setEnd', 'setWall']),
 		back() {
 			this.setMode('UNSETTING');
 		},
 		build(uid) {
-			console.log(this.w(uid));
 			switch (this.mode) {
 				case 'BUILD-S':
 					return this.setStart(uid);
 				case 'BUILD-E':
 					return this.setEnd(uid);
+				case 'BUILD-W':
+					return this.setWall(uid);
 				default:
 					return;
 			}

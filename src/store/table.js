@@ -49,6 +49,14 @@ export default {
 					d1,
 					color
 				}))
-			)
+			),
+		isWall: (state) => (uid) => {
+			const { row, column } = parseUid(uid);
+			return state.values[row][column].wall;
+		},
+		isAction: (state) => (uid) => {
+			const { row, column } = parseUid(uid);
+			return state.values[row][column].action;
+		}
 	}
 };

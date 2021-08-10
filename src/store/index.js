@@ -24,6 +24,9 @@ export default createStore({
 		},
 		setEnd: (state, uid) => {
 			state.end = uid;
+		},
+		setMode: (state, mode) => {
+			state.mode = mode;
 		}
 	},
 	actions: {
@@ -31,13 +34,26 @@ export default createStore({
 			dispatch('table/tableInit', { row, column });
 			commit('init', { row, column });
 		},
-		setStart: ({ state: { startColor }, commit, dispatch }, uid) => {
+		setStart: ({ state, commit, dispatch }, uid) => {
+			const { normal, startColor, start, end } = state;
+			if (uid === end)
+				return alert("Can't set the start point on the end point");
+			if (start !== -1)
+				dispatch('table/setBlock', { uid: start, color: normal });
 			commit('setStart', uid);
 			dispatch('table/setBlock', { uid, color: startColor });
 		},
-		setEnd: ({ state: { endColor }, commit, dispatch }, uid) => {
+		setEnd: ({ state, commit, dispatch }, uid) => {
+			const { normal, end, endColor, start } = state;
+			if (uid === start)
+				return alert("Can't set the end point on the start point");
+			if (end !== -1)
+				dispatch('table/setBlock', { uid: end, color: normal });
 			commit('setEnd', uid);
 			dispatch('table/setBlock', { uid, color: endColor });
+		},
+		setMode: ({ commit }, mode) => {
+			commit('setMode', mode);
 		}
 	},
 	getters: {

@@ -1,5 +1,7 @@
 import { createStore } from 'vuex';
 
+import settingActions from './settingActions';
+import settingMutations from './settingMutations';
 import table from './table';
 
 export default createStore({
@@ -20,52 +22,14 @@ export default createStore({
 			state.column = column;
 			state.mode = 'BUILD-UNSELECT';
 		},
-		setStart: (state, uid) => {
-			state.start = uid;
-		},
-		setEnd: (state, uid) => {
-			state.end = uid;
-		},
-		setMode: (state, mode) => {
-			state.mode = mode;
-		}
+		...settingMutations
 	},
 	actions: {
 		init: ({ commit, dispatch }, { row, column }) => {
 			dispatch('table/tableInit', { row, column });
 			commit('init', { row, column });
 		},
-		setStart: ({ state, commit, dispatch }, uid) => {
-			const { normal, startColor, start, end } = state;
-			if (uid === end)
-				return alert("Can't set the start point on the end point");
-			if (start !== -1)
-				dispatch('table/setBlock', { uid: start, color: normal });
-			commit('setStart', uid);
-			dispatch('table/setBlock', { uid, color: startColor });
-		},
-		setEnd: ({ state, commit, dispatch }, uid) => {
-			const { normal, end, endColor, start } = state;
-			if (uid === start)
-				return alert("Can't set the end point on the start point");
-			if (end !== -1)
-				dispatch('table/setBlock', { uid: end, color: normal });
-			commit('setEnd', uid);
-			dispatch('table/setBlock', { uid, color: endColor });
-		},
-		setWall: ({ dispatch, rootGetters, state }, uid) => {
-			const { wallColor, normal } = state;
-			const isWall = rootGetters['table/isWall'](uid);
-			console.log(isWall);
-			dispatch('table/setBlock', {
-				uid,
-				wall: !isWall,
-				color: isWall ? normal : wallColor
-			});
-		},
-		setMode: ({ commit }, mode) => {
-			commit('setMode', mode);
-		}
+		...settingActions
 	},
 	getters: {
 		getSize: ({ row, column }) => ({ row, column }),

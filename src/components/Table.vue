@@ -1,5 +1,5 @@
 <template>
-	<table cellspacing="0" cellpadding="0">
+	<table cellspacing="0" cellpadding="0" v-if="mode !== 'UNSETTING'">
 		<tr v-for="(row, ior) in table" :key="ior">
 			<td v-for="({ d0, d1, color }, ioc) in row" :key="ioc">
 				<Block :d0="d0" :d1="d1" size="50px" :color="color" />
@@ -16,7 +16,7 @@ import Block from './Block';
 export default {
 	name: 'Table',
 	components: { Block },
-	computed: { ...mapGetters({ table: 'table/table' }) }
+	computed: { ...mapGetters({ table: 'table/table', mode: 'mode' }) }
 };
 </script>
 

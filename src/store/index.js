@@ -6,7 +6,7 @@ export default createStore({
 	state: {
 		row: 0,
 		column: 0,
-		mode: 'SETTING',
+		mode: 'UNSETTING',
 		start: -1,
 		end: -1,
 		startColor: 'lightblue',
@@ -43,7 +43,8 @@ export default createStore({
 	getters: {
 		getSize: ({ row, column }) => ({ row, column }),
 		getColumn: ({ column }) => column,
-		getRow: ({ row }) => row
+		getRow: ({ row }) => row,
+		mode: ({ mode }) => mode
 	},
 	modules: { table }
 });

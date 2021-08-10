@@ -1,4 +1,5 @@
 <template>
+	<Setting />
 	<Table />
 </template>
 
@@ -6,13 +7,14 @@
 import { mapActions } from 'vuex';
 
 import Table from './components/Table';
+import Setting from './components/Setting.vue';
 
 export default {
 	name: 'App',
-	components: { Table },
+	components: { Table, Setting },
 	methods: { ...mapActions(['init', 'setStart']) },
 	mounted() {
-		this.init({ row: 10, column: 9 });
+		// this.init({ row: 10, column: 9 });
 	}
 };
 </script>

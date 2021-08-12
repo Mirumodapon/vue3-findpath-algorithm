@@ -3,7 +3,8 @@ import parseUid from '../util/parseUid';
 export default {
 	namespaced: true,
 	state: {
-		values: [[]]
+		values: [[]],
+		target: -1
 	},
 	mutations: {
 		tableInit: (state, table) => {
@@ -13,6 +14,15 @@ export default {
 			let item = state.values[row][column];
 			item = { ...item, ...config };
 			state.values[row][column] = item;
+		},
+		_setBlock: (state, { uid, ...config }) => {
+			const { row, column } = parseUid(uid);
+			let item = state.values[row][column];
+			item = { ...item, ...config };
+			state.values[row][column] = item;
+		},
+		setTarget: (state, uid) => {
+			state.target = uid;
 		}
 	},
 	actions: {

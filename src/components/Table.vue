@@ -19,6 +19,7 @@
 		<button @click="() => setMode('BUILD-S')">Start</button>
 		<button @click="() => setMode('BUILD-E')">End</button>
 		<button @click="back">Back</button>
+		<button @click="() => start()">start</button>
 	</div>
 </template>
 
@@ -34,7 +35,7 @@ export default {
 		...mapGetters({ table: 'table/table', mode: 'mode', w: 'table/isWall' })
 	},
 	methods: {
-		...mapActions(['setMode', 'setStart', 'setEnd', 'setWall']),
+		...mapActions(['setMode', 'setStart', 'setEnd', 'setWall', 'start']),
 		back() {
 			this.setMode('UNSETTING');
 		},

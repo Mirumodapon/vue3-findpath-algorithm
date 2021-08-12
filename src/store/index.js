@@ -4,6 +4,8 @@ import settingActions from './settingActions';
 import settingMutations from './settingMutations';
 import table from './table';
 
+import distance from '../util/distance';
+
 export default createStore({
 	state: {
 		row: 0,
@@ -14,7 +16,9 @@ export default createStore({
 		startColor: 'lightblue',
 		endColor: 'red',
 		normal: 'white',
-		wallColor: 'black'
+		wallColor: 'black',
+		actionColor: 'yellow',
+		path: []
 	},
 	mutations: {
 		init: (state, { row, column }) => {
@@ -22,14 +26,91 @@ export default createStore({
 			state.column = column;
 			state.mode = 'BUILD-UNSELECT';
 		},
-		...settingMutations
+		...settingMutations,
+		path: (state, uid) => {
+			state.path.push(uid);
+		}
 	},
 	actions: {
 		init: ({ commit, dispatch }, { row, column }) => {
 			dispatch('table/tableInit', { row, column });
 			commit('init', { row, column });
 		},
-		...settingActions
+		...settingActions,
+		start: ({ dispatch, state: { start, end } }) => {
+			if (start === -1) return alert('You have not set Start.');
+			if (end === -1) return alert('You have not set End.');
+			dispatch('target');
+		},
+		action: ({ state, commit, dispatch, rootGetters }) => {
+			const { row, column, start, end, actionColor } = state;
+			const { target } = state.table;
+			const checkArr = [target + column, target - column];
+			if (target % column === column - 1) checkArr.push(target - 1);
+			else if (target % column === 0) checkArr.push(target + 1);
+			else checkArr.push(target + 1, target - 1);
+			for (let x of checkArr) {
+				if (
+					x < 0 ||
+					x >= row * column ||
+					rootGetters['table/isAction'](x) ||
+					rootGetters['table/isWall'](x)
+				)
+					continue;
+				if (x === end) return;
+				const d0 = distance(x, start);
+				const d1 = distance(x, end);
+				commit('table/_setBlock', {
+					uid: x,
+					d0,
+					d1,
+					color: actionColor
+				});
+			}
+			dispatch('check');
+			dispatch;
+		},
+		target: ({ state, dispatch, commit }) => {
+			const {
+				start,
+				table: { target }
+			} = state;
+			if (target === -1) {
+				commit('table/setTarget', start);
+				commit('table/_setBlock', { uid: start, action: true });
+			}
+			dispatch('action');
+		},
+		check: ({ state, commit, dispatch }) => {
+			const table = state.table.values;
+			const { end } = state;
+			let small = null;
+			let uid = 0;
+			for (let i of table) {
+				for (let j of i) {
+					if (j.action || j.d1 < 0 || j.d0 < 0) continue;
+					const s = j.d1 + j.d0;
+					if (small && small > s) {
+						uid = j.uid;
+						small = s;
+					} else {
+						uid = j.uid;
+						small = s;
+					}
+				}
+			}
+			if (uid !== end) {
+				commit('table/setTarget', uid);
+				commit('table/_setBlock', { uid, color: 'blue', action: true });
+				dispatch('target');
+				commit('path', uid);
+			} else {
+				dispatch('repath');
+			}
+		},
+		repath: ({ state }) => {
+			console.log(state.path);
+		}
 	},
 	getters: {
 		getSize: ({ row, column }) => ({ row, column }),

@@ -41,6 +41,7 @@ export default createStore({
 			dispatch('target');
 		},
 		action: ({ state, commit, dispatch, rootGetters }) => {
+			// eslint-disable-next-line no-unused-vars
 			const { row, column, start, end, openColor } = state;
 			const { target } = state.table;
 			const checkArr = [target + column, target - column];
@@ -61,10 +62,16 @@ export default createStore({
 				commit('table/_setBlock', {
 					uid: x,
 					d0,
-					d1,
-					color: openColor
+					d1
 				});
-				dispatch('table/setBy', { uid: x, by: target });
+				// commit('table/_setBlock', {
+				// 	uid: x,
+				// 	color: openColor
+				// });
+				dispatch('table/setBy', {
+					uid: x,
+					by: target
+				});
 			}
 			dispatch('check');
 			dispatch;
@@ -82,6 +89,7 @@ export default createStore({
 		},
 		check: ({ state, commit, dispatch }) => {
 			const table = state.table.values;
+			// eslint-disable-next-line no-unused-vars
 			const { end, actionColor } = state;
 			let small = null;
 			let uid = 0;
@@ -103,9 +111,12 @@ export default createStore({
 				commit('table/setTarget', uid);
 				commit('table/_setBlock', {
 					uid,
-					color: actionColor,
 					action: true
 				});
+				// commit('table/_setBlock', {
+				// 	uid,
+				// 	color: actionColor
+				// });
 				dispatch('target');
 			} else {
 				dispatch('repath');

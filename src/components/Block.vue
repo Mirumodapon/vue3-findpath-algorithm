@@ -1,8 +1,8 @@
 <template>
 	<div class="block" :style="style">
-		<span>{{ d0 > 0 ? d0 : '' }}</span>
-		<span>{{ d1 > 0 ? d1 : '' }}</span>
-		<span>{{ sum > 0 ? sum : '' }}</span>
+		<span v-if="false">{{ d0 > 0 ? d0 : '' }}</span>
+		<span v-if="false">{{ d1 > 0 ? d1 : '' }}</span>
+		<span v-if="false">{{ sum > 0 ? sum : '' }}</span>
 	</div>
 </template>
 

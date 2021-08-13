@@ -17,8 +17,9 @@ export default createStore({
 		endColor: 'red',
 		normal: 'white',
 		wallColor: 'black',
-		actionColor: 'yellow',
-		path: []
+		openColor: 'yellow',
+		actionColor: 'blue',
+		pathColor: 'green'
 	},
 	mutations: {
 		init: (state, { row, column }) => {
@@ -26,10 +27,7 @@ export default createStore({
 			state.column = column;
 			state.mode = 'BUILD-UNSELECT';
 		},
-		...settingMutations,
-		path: (state, uid) => {
-			state.path.push(uid);
-		}
+		...settingMutations
 	},
 	actions: {
 		init: ({ commit, dispatch }, { row, column }) => {
@@ -43,7 +41,7 @@ export default createStore({
 			dispatch('target');
 		},
 		action: ({ state, commit, dispatch, rootGetters }) => {
-			const { row, column, start, end, actionColor } = state;
+			const { row, column, start, end, openColor } = state;
 			const { target } = state.table;
 			const checkArr = [target + column, target - column];
 			if (target % column === column - 1) checkArr.push(target - 1);
@@ -57,15 +55,16 @@ export default createStore({
 					rootGetters['table/isWall'](x)
 				)
 					continue;
-				if (x === end) return;
+				if (x === end) return dispatch('repath', target);
 				const d0 = distance(x, start);
 				const d1 = distance(x, end);
 				commit('table/_setBlock', {
 					uid: x,
 					d0,
 					d1,
-					color: actionColor
+					color: openColor
 				});
+				dispatch('table/setBy', { uid: x, by: target });
 			}
 			dispatch('check');
 			dispatch;
@@ -83,17 +82,18 @@ export default createStore({
 		},
 		check: ({ state, commit, dispatch }) => {
 			const table = state.table.values;
-			const { end } = state;
+			const { end, actionColor } = state;
 			let small = null;
 			let uid = 0;
 			for (let i of table) {
 				for (let j of i) {
 					if (j.action || j.d1 < 0 || j.d0 < 0) continue;
 					const s = j.d1 + j.d0;
-					if (small && small > s) {
+					if (!small) {
 						uid = j.uid;
 						small = s;
-					} else {
+					}
+					if (small > s) {
 						uid = j.uid;
 						small = s;
 					}
@@ -101,15 +101,24 @@ export default createStore({
 			}
 			if (uid !== end) {
 				commit('table/setTarget', uid);
-				commit('table/_setBlock', { uid, color: 'blue', action: true });
+				commit('table/_setBlock', {
+					uid,
+					color: actionColor,
+					action: true
+				});
 				dispatch('target');
-				commit('path', uid);
 			} else {
 				dispatch('repath');
 			}
 		},
-		repath: ({ state }) => {
-			console.log(state.path);
+		repath: ({ commit, state, rootGetters }, _uid) => {
+			const { pathColor, start } = state;
+			const getBy = rootGetters['table/getBy'];
+			let uid = _uid;
+			while (uid !== start) {
+				commit('table/_setBlock', { uid, color: pathColor });
+				uid = getBy(uid);
+			}
 		}
 	},
 	getters: {

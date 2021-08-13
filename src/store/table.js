@@ -48,6 +48,12 @@ export default {
 		setBlock: ({ commit }, { uid, ...config }) => {
 			const { row, column } = parseUid(uid);
 			commit('setBlock', { row, column, ...config });
+		},
+		setBy: ({ state, commit }, { uid, by }) => {
+			const { row, column } = parseUid(uid);
+			const { values } = state;
+			if (values[row][column].by) return;
+			commit('setBlock', { row, column, by });
 		}
 	},
 	getters: {
@@ -67,6 +73,10 @@ export default {
 		isAction: (state) => (uid) => {
 			const { row, column } = parseUid(uid);
 			return state.values[row][column].action;
+		},
+		getBy: (state) => (uid) => {
+			const { row, column } = parseUid(uid);
+			return state.values[row][column].by;
 		}
 	}
 };

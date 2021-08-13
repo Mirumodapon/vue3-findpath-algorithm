@@ -13,24 +13,28 @@
 		</tr>
 	</table>
 
-	<div v-if="mode !== 'UNSETTING'">
+	<TableSetting />
+	<GameSetting />
+	<!-- <div v-if="mode !== 'UNSETTING'">
 		{{ mode }}
 		<button @click="() => setMode('BUILD-W')">Wall</button>
 		<button @click="() => setMode('BUILD-S')">Start</button>
 		<button @click="() => setMode('BUILD-E')">End</button>
 		<button @click="back">Back</button>
 		<button @click="() => start()">start</button>
-	</div>
+	</div> -->
 </template>
 
 <script>
 import { mapActions, mapGetters } from 'vuex';
 
 import Block from './Block';
+import TableSetting from './TableSetting.vue';
+import GameSetting from './GameSetting.vue';
 
 export default {
 	name: 'Table',
-	components: { Block },
+	components: { Block, TableSetting, GameSetting },
 	computed: {
 		...mapGetters({ table: 'table/table', mode: 'mode', w: 'table/isWall' })
 	},

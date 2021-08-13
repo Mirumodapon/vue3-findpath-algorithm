@@ -9,6 +9,7 @@ export default {
 	mutations: {
 		tableInit: (state, table) => {
 			state.values = table;
+			state.target = -1;
 		},
 		setBlock: (state, { row, column, ...config }) => {
 			let item = state.values[row][column];

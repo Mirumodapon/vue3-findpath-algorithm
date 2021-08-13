@@ -26,11 +26,16 @@ export default createStore({
 			state.row = row;
 			state.column = column;
 			state.mode = 'BUILD-UNSELECT';
+			state.start = -1;
+			state.end = -1;
 		},
 		...settingMutations
 	},
 	actions: {
-		init: ({ commit, dispatch }, { row, column }) => {
+		init: ({ commit, dispatch, state }, _init) => {
+			let row, column;
+			if (!_init) ({ row, column } = state);
+			else ({ row, column } = _init);
 			dispatch('table/tableInit', { row, column });
 			commit('init', { row, column });
 		},
